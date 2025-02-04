@@ -1,0 +1,1 @@
+ALTER TABLE "t3-app@latest_post" RENAME TO "finance_post";
