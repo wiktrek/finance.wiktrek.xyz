@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { auth } from "~/server/auth";
 import SignIn from "./_components/sign-in";
 export default async function Home() {
