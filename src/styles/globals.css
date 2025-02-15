@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 @layer base {
   :root {
     --foreground: 210 40% 98%;
@@ -30,10 +28,10 @@
 }
 @layer base {
   * {
-    @apply border-border;
+    @apply border-[hsl(border)];
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[background] text-[foreground];
   }
 }
 body {
