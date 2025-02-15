@@ -15,6 +15,13 @@
       "when": 1738676270036,
       "tag": "0001_bitter_spot",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1739640058976,
+      "tag": "0002_elite_sir_ram",
+      "breakpoints": true
     }
   ]
 }
