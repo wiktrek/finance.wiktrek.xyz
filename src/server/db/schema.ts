@@ -17,7 +17,7 @@ import { type AdapterAccount } from "next-auth/adapters";
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 export const createTable = pgTableCreator((name) => `finance_${name}`);
-
+// auth
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })
     .notNull()
@@ -30,10 +30,12 @@ export const users = createTable("user", {
     withTimezone: true,
   }).default(sql`CURRENT_TIMESTAMP`),
   image: varchar("image", { length: 255 }),
+  balance: integer("balance").notNull().default(0),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  transactions: many(transactions),
 }));
 
 export const accounts = createTable(
@@ -106,3 +108,17 @@ export const verificationTokens = createTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   }),
 );
+// finance
+export const transactions = createTable("transactions", {
+  id: varchar("id", { length: 255 })
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: varchar("user_id", { length: 255 })
+    .notNull()
+    .references(() => users.id),
+  amount: integer("amount").notNull(),
+  currency: varchar("currency", { length: 255 }).notNull(),
+  date: timestamp("date", { mode: "date", withTimezone: true }).notNull(),
+  description: text("description"),
+});
