@@ -1,6 +1,6 @@
 import { auth } from "~/server/auth";
 import SignIn from "./_components/sign-in";
-import { Transaction } from "./_components/transactions";
+import { CreateTransaction, Transaction } from "./_components/transactions";
 import { api } from "~/trpc/server";
 export default async function Home() {
   const session = await auth();
@@ -18,17 +18,19 @@ export default async function Home() {
       <h1 className="text-3xl font-semibold">Finance manager</h1>
       {!session && <SignIn />}
       {session && <span>Logged in as {session.user?.name}</span>}
-      {session && <Transaction id="jakies id" />}
       {/* {greeting} */}
       {data?.map((t) => {
         return (
-          <div key={t.id}>
-            <h1>Transaction {t.id}</h1>
-            <p>{t.amount}</p>
-            <p>{t.description}</p>
-          </div>
+          <Transaction
+            key={t.id}
+            amount={t.amount}
+            currency={t.currency}
+            description={t.description ?? ""}
+            id={t.id}
+          />
         );
       })}
+      <CreateTransaction />
     </main>
   );
 }

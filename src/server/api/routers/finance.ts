@@ -3,6 +3,7 @@ import { transactions } from "~/server/db/schema";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { cursorTo } from "readline";
 
 export const financeRouter = createTRPCRouter({
   hello: publicProcedure
@@ -27,6 +28,25 @@ export const financeRouter = createTRPCRouter({
         where: eq(transactions.userId, input.id),
       });
       return AllTransactions;
+    }),
+  createTransaction: publicProcedure
+    .input(
+      z.object({
+        userId: z.string().min(1),
+        amount: z.number(),
+        description: z.string().min(1).max(256),
+        currency: z.string().min(1).max(4),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const createdTransaction = await ctx.db.insert(transactions).values({
+        userId: input.userId,
+        amount: input.amount,
+        description: input.description,
+        date: new Date(),
+        currency: input.currency,
+      });
+      return createdTransaction;
     }),
   //   getLatest: publicProcedure.query(async ({ ctx }) => {
   //     const post = await ctx.db.query.posts.findFirst({
