@@ -9,24 +9,20 @@ export function Transaction(props: {
   currency: string;
 }) {
   return (
-    <div>
-      <h1>Transaction {props.id}</h1>
-      <p>{props.description}</p>
-      <p>
-        {props.amount}
-        {props.currency}
-      </p>
+    <div className="w-64 text-left">
+      <p>{`${props.description} - ${props.amount}${props.currency}`}</p>
     </div>
   );
 }
 export function CreateTransaction() {
+  // move this to react-hook-form
   const { data: session, status } = useSession();
   const [amount, setAmount] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [currency, setCurrency] = React.useState("");
   const [createdTransaction, setCreatedTransaction] = React.useState(false);
   const mutation = api.finance.createTransaction.useMutation();
-  if (!session) return <p>Not logged in!</p>;
+  if (!session || status !== "authenticated") return <p>Not logged in!</p>;
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = mutation.mutate({
