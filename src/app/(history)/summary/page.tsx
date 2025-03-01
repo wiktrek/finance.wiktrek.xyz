@@ -2,7 +2,7 @@ import { auth } from "~/server/auth";
 import SignIn from "~/app/_components/sign-in";
 import { Transaction } from "~/app/_components/transactions";
 import { api } from "~/trpc/server";
-import { Chart } from "~/components/chart";
+import { Chart, ChartWithSelectMenu } from "~/components/chart";
 export default async function Home() {
   const session = await auth();
   if (!session?.user.id) return <p>Err</p>;
@@ -26,7 +26,7 @@ export default async function Home() {
           />
         );
       })}
-      <Chart />
+      <ChartWithSelectMenu id="123" />
     </main>
   );
 }

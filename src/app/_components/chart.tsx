@@ -15,21 +15,24 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { api } from "~/trpc/react";
 interface ChartData {
   month: string;
   spent: number;
   received: number;
 }
-export function SelectMenu() {
+export function SelectMenu(props: { months: string[] }) {
   return (
     <Select>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Theme" />
+        <SelectValue placeholder="Month" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="light">Light</SelectItem>
-        <SelectItem value="dark">Dark</SelectItem>
-        <SelectItem value="system">System</SelectItem>
+        {props.months.map((month) => (
+          <SelectItem key={month} value={month}>
+            {month}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );
@@ -58,10 +61,44 @@ export function Chart(props: {
     </ChartContainer>
   );
 }
+
 export function ChartWithSelectMenu(props: { id: string }) {
+  const chartConfig = {
+    spent: {
+      label: "Spent",
+      color: "#2563eb",
+    },
+    received: {
+      label: "Received",
+      color: "#2563eb",
+    },
+  } satisfies ChartConfig;
+  // const { data, isLoading } = api.finance.getByDate.useQuery({
+  //   id: props.id,
+  //   since: new Date("2025-03-01"),
+  //   until: new Date("2025-03-31"),
+  // });
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
   return (
-    <div>
-      <Chart chartConfig={} chartData={} />
-    </div>
+    <>
+      <SelectMenu months={["03.2025"]} />
+      <Chart
+        chartConfig={chartConfig}
+        chartData={[
+          {
+            month: "December",
+            spent: 100,
+            received: 200,
+          },
+          {
+            month: "January",
+            spent: 100,
+            received: 200,
+          },
+        ]}
+      />
+    </>
   );
 }
