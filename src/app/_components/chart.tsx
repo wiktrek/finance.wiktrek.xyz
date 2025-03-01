@@ -21,7 +21,7 @@ interface ChartData {
   spent: number;
   received: number;
 }
-export function SelectMenu(props: { months: string[] }) {
+export function SelectMonth(props: { months: string[] }) {
   return (
     <Select>
       <SelectTrigger className="w-[180px]">
@@ -31,6 +31,22 @@ export function SelectMenu(props: { months: string[] }) {
         {props.months.map((month) => (
           <SelectItem key={month} value={month}>
             {month}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+export function SelectYear(props: { years: string[] }) {
+  return (
+    <Select>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Year" />
+      </SelectTrigger>
+      <SelectContent>
+        {props.years.map((year) => (
+          <SelectItem key={year} value={year}>
+            {year}
           </SelectItem>
         ))}
       </SelectContent>
@@ -116,7 +132,8 @@ export function ChartWithSelectMenu(props: { id: string }) {
   }
   return (
     <>
-      <SelectMenu months={["03.2025"]} />
+      <SelectYear years={["2025"]} />
+      <SelectMonth months={["03.2025"]} />
       <Chart chartConfig={chartConfig} chartData={chartData} />
     </>
   );
