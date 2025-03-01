@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, between, eq } from "drizzle-orm";
 import { transactions } from "~/server/db/schema";
 import { z } from "zod";
 
@@ -39,6 +39,19 @@ export const financeRouter = createTRPCRouter({
         currency: input.currency,
       });
       return createdTransaction;
+    }),
+  getByDate: publicProcedure
+    .input(
+      z.object({ id: z.string().min(1), since: z.date(), until: z.date() }),
+    )
+    .query(async ({ ctx, input }) => {
+      const Transactions = await ctx.db.query.transactions.findMany({
+        where: and(
+          between(transactions.date, input.since, input.until),
+          eq(transactions.userId, input.id),
+        ),
+      });
+      return Transactions;
     }),
   //   getLatest: publicProcedure.query(async ({ ctx }) => {
   //     const post = await ctx.db.query.posts.findFirst({
