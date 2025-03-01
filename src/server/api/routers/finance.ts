@@ -3,7 +3,6 @@ import { transactions } from "~/server/db/schema";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { cursorTo } from "readline";
 
 export const financeRouter = createTRPCRouter({
   //   create: publicProcedure
