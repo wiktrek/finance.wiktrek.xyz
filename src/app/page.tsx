@@ -4,7 +4,12 @@ import { CreateTransaction, Transaction } from "./_components/transactions";
 import { api } from "~/trpc/server";
 export default async function Home() {
   const session = await auth();
-  if (!session?.user.id) return <p>Err</p>;
+  if (!session?.user.id)
+    return (
+      <>
+        Err <SignIn />
+      </>
+    );
   const data = await api.finance.getTransactions({
     id: session.user.id,
   });

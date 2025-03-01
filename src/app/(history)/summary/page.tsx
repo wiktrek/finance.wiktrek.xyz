@@ -5,8 +5,12 @@ import { api } from "~/trpc/server";
 import { Chart, ChartWithSelectMenu } from "~/components/chart";
 export default async function Home() {
   const session = await auth();
-  if (!session?.user.id) return <p>Err</p>;
-  if (!session) return <SignIn />;
+  if (!session?.user.id)
+    return (
+      <>
+        Err <SignIn />
+      </>
+    );
   const data = await api.finance.getByDate({
     id: session.user.id,
     since: new Date("2024-12-20"),
