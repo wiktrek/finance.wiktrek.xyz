@@ -55,8 +55,8 @@ export function Chart(props: {
         />
         <ChartTooltip content={<ChartTooltipContent />} />
         <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="spent" fill="var(--color-desktop)" radius={4} />
-        <Bar dataKey="received" fill="var(--color-mobile)" radius={4} />
+        <Bar dataKey="spent" fill="var(--color-spent)" radius={4} />
+        <Bar dataKey="received" fill="var(--color-received)" radius={4} />
       </BarChart>
     </ChartContainer>
   );
@@ -66,11 +66,11 @@ export function ChartWithSelectMenu(props: { id: string }) {
   const chartConfig = {
     spent: {
       label: "Spent",
-      color: "#2563eb",
+      color: "hsl(var(--chart-1))",
     },
     received: {
       label: "Received",
-      color: "#2563eb",
+      color: "hsl(var(--chart-2))",
     },
   } satisfies ChartConfig;
   // const { data, isLoading } = api.finance.getByDate.useQuery({
