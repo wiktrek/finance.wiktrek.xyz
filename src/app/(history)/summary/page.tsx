@@ -30,7 +30,7 @@ export default async function Home() {
           />
         );
       })}
-      <ChartWithSelectMenu id="123" />
+      <ChartWithSelectMenu id={session.user.id} />
     </main>
   );
 }

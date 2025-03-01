@@ -73,32 +73,51 @@ export function ChartWithSelectMenu(props: { id: string }) {
       color: "hsl(var(--chart-2))",
     },
   } satisfies ChartConfig;
-  // const { data, isLoading } = api.finance.getByDate.useQuery({
-  //   id: props.id,
-  //   since: new Date("2025-03-01"),
-  //   until: new Date("2025-03-31"),
-  // });
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
+  const { data, isLoading } = api.finance.getByDate.useQuery({
+    id: props.id,
+    since: new Date("2025-03-01"),
+    until: new Date("2025-04-01"),
+  });
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  let chartData: ChartData[] = [];
+  if (data) {
+    data.map((item) => {
+      if (item.amount > 0) {
+        chartData.push({
+          month: new Date(item.date).toLocaleString("en", {
+            month: "long",
+          }),
+          received: item.amount,
+          spent: 0,
+        });
+      } else {
+        chartData.push({
+          month: new Date(item.date).toLocaleString("en", {
+            month: "long",
+          }),
+          spent: item.amount * -1,
+          received: 0,
+        });
+      }
+    });
+    chartData = chartData.reduce((acc, current) => {
+      const existing = acc.find((item) => item.month === current.month);
+      if (existing) {
+        existing.spent += current.spent;
+        existing.received += current.received;
+      } else {
+        acc.push(current);
+      }
+      return acc;
+    }, [] as ChartData[]);
+  }
   return (
     <>
       <SelectMenu months={["03.2025"]} />
-      <Chart
-        chartConfig={chartConfig}
-        chartData={[
-          {
-            month: "December",
-            spent: 100,
-            received: 200,
-          },
-          {
-            month: "January",
-            spent: 100,
-            received: 200,
-          },
-        ]}
-      />
+      <Chart chartConfig={chartConfig} chartData={chartData} />
     </>
   );
 }
