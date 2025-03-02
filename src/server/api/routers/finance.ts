@@ -1,5 +1,5 @@
 import { and, between, eq } from "drizzle-orm";
-import { transactions } from "~/server/db/schema";
+import { transactions, users } from "~/server/db/schema";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
@@ -37,6 +37,17 @@ export const financeRouter = createTRPCRouter({
         date: new Date(),
         currency: input.currency,
       });
+      const user = await ctx.db.query.users.findFirst({
+        where: eq(users.id, input.userId),
+      });
+      if (user) {
+        await ctx.db
+          .update(users)
+          .set({
+            balance: (user.balance ?? 0) + Math.floor((input.amount * 100) / 1),
+          })
+          .where(eq(users.id, input.userId));
+      }
       return createdTransaction;
     }),
   getByDate: publicProcedure
@@ -51,6 +62,14 @@ export const financeRouter = createTRPCRouter({
         ),
       });
       return Transactions;
+    }),
+  getBalance: publicProcedure
+    .input(z.object({ id: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const balance = await ctx.db.query.users.findFirst({
+        where: eq(users.id, input.id),
+      });
+      return (balance?.balance ?? 0) / 100;
     }),
   //   getLatest: publicProcedure.query(async ({ ctx }) => {
   //     const post = await ctx.db.query.posts.findFirst({

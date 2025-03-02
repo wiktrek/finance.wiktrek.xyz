@@ -28,20 +28,26 @@ export function CreateTransaction() {
   const { data: session, status } = useSession();
   const [amount, setAmount] = React.useState("");
   const [description, setDescription] = React.useState("");
-  const [currency, setCurrency] = React.useState("");
+  const [currency, setCurrency] = React.useState("PLN");
   const [createdTransaction, setCreatedTransaction] = React.useState(false);
   const mutation = api.finance.createTransaction.useMutation();
   if (!session || status !== "authenticated") return <p>Not logged in!</p>;
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = mutation.mutate({
-      amount: parseFloat(amount),
-      description,
-      currency,
-      userId: session?.user?.id,
-    });
+    const data = mutation.mutate(
+      {
+        amount: parseFloat(amount),
+        description,
+        currency,
+        userId: session?.user?.id,
+      },
+      {
+        onSuccess: () => {
+          setCreatedTransaction(true);
+        },
+      },
+    );
     console.log(data);
-    setCreatedTransaction(true);
   };
   return (
     <form onSubmit={handleSubmit} className="flex justify-center">

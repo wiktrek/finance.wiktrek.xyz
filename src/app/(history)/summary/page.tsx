@@ -14,7 +14,7 @@ export default async function Home() {
   const data = await api.finance.getByDate({
     id: session.user.id,
     since: new Date("2024-12-20"),
-    until: new Date("2025-03-02"),
+    until: new Date("2025-03-03"),
   });
   return (
     <main className="items-center justify-center text-center">
