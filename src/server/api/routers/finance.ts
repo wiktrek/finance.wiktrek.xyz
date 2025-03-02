@@ -32,7 +32,7 @@ export const financeRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const createdTransaction = await ctx.db.insert(transactions).values({
         userId: input.userId,
-        amount: input.amount,
+        amount: Math.floor((input.amount * 100) / 1),
         description: input.description,
         date: new Date(),
         currency: input.currency,

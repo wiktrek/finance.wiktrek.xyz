@@ -2,6 +2,15 @@
 import React from "react";
 import { api } from "~/trpc/react";
 import { useSession } from "next-auth/react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 export function Transaction(props: {
   id: string;
   amount: number;
@@ -10,7 +19,7 @@ export function Transaction(props: {
 }) {
   return (
     <div className="w-64 text-left">
-      <p>{`${props.description} - ${props.amount}${props.currency}`}</p>
+      <p>{`${props.description} - ${props.amount / 100}${props.currency}`}</p>
     </div>
   );
 }
@@ -35,26 +44,34 @@ export function CreateTransaction() {
     setCreatedTransaction(true);
   };
   return (
-    <form onSubmit={handleSubmit}>
-      <input
+    <form onSubmit={handleSubmit} className="flex justify-center">
+      <Input
+        className="w-48"
         type="number"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         placeholder="Amount"
       />
-      <input
+      <Input
+        className="w-48"
         type="text"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Description"
       />
-      <input
-        type="text"
-        value={currency}
-        onChange={(e) => setCurrency(e.target.value)}
-        placeholder="Currency"
-      />
-      <button type="submit">Create transaction</button>
+      <Select onValueChange={(e) => setCurrency(e)} defaultValue="PLN">
+        <SelectTrigger className="w-48">
+          <SelectValue placeholder="Currency" />
+        </SelectTrigger>
+        <SelectContent>
+          {["PLN", "EUR", "USD"].map((currency) => (
+            <SelectItem key={currency} value={currency}>
+              {currency}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Button type="submit">Create transaction</Button>
       {createdTransaction && <p>Transaction created</p>}
     </form>
   );
