@@ -122,10 +122,14 @@ export function ChartWithSelectMenu(props: { id: string }) {
     chartData = chartData.reduce((acc, current) => {
       const existing = acc.find((item) => item.month === current.month);
       if (existing) {
-        existing.spent += current.spent;
-        existing.received += current.received;
+        existing.spent += current.spent / 100;
+        existing.received += current.received / 100;
       } else {
-        acc.push(current);
+        acc.push({
+          month: current.month,
+          spent: current.spent / 100,
+          received: current.received / 100,
+        });
       }
       return acc;
     }, [] as ChartData[]);
