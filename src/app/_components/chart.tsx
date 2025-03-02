@@ -16,43 +16,13 @@ import {
 } from "~/components/ui/select";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import { api } from "~/trpc/react";
+import { SplineIcon } from "lucide-react";
 interface ChartData {
   month: string;
   spent: number;
   received: number;
 }
-export function SelectMonth(props: { months: string[] }) {
-  return (
-    <Select>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Month" />
-      </SelectTrigger>
-      <SelectContent>
-        {props.months.map((month) => (
-          <SelectItem key={month} value={month}>
-            {month}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
-}
-export function SelectYear(props: { years: string[] }) {
-  return (
-    <Select>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Year" />
-      </SelectTrigger>
-      <SelectContent>
-        {props.years.map((year) => (
-          <SelectItem key={year} value={year}>
-            {year}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  );
-}
+
 export function Chart(props: {
   chartConfig: ChartConfig;
   chartData: ChartData[];
@@ -89,13 +59,44 @@ export function ChartWithSelectMenu(props: { id: string }) {
       color: "hsl(var(--chart-2))",
     },
   } satisfies ChartConfig;
+
+  function SelectMenu(props: { values: string[]; placeholder: string }) {
+    return (
+      <Select>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder={props.placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {props.values.map((v) => (
+            <SelectItem key={v} value={v}>
+              {v}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
+  }
+  return (
+    <>
+      <SelectMenu
+        values={["01.2025", "02.2025", "03.2025"]}
+        placeholder="Month"
+      />
+      {/* <Chart
+        chartConfig={chartConfig}
+        chartData={getChartData(props.id, new Date(), new Date())}
+      /> */}
+    </>
+  );
+}
+function getChartData(id: string, since: Date, until: Date): ChartData[] {
   const { data, isLoading } = api.finance.getByDate.useQuery({
-    id: props.id,
-    since: new Date("2025-03-01"),
-    until: new Date("2025-04-01"),
+    id: id,
+    since,
+    until,
   });
   if (isLoading) {
-    return <div>Loading...</div>;
+    return [];
   }
 
   let chartData: ChartData[] = [];
@@ -134,11 +135,5 @@ export function ChartWithSelectMenu(props: { id: string }) {
       return acc;
     }, [] as ChartData[]);
   }
-  return (
-    <>
-      <SelectYear years={["2025"]} />
-      <SelectMonth months={["03.2025"]} />
-      <Chart chartConfig={chartConfig} chartData={chartData} />
-    </>
-  );
+  return chartData;
 }
